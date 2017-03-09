@@ -1,6 +1,6 @@
 package no.runsafe.dergons;
 
-import net.minecraft.server.v1_7_R3.*;
+import net.minecraft.server.v1_8_R3.*;
 import no.runsafe.framework.api.ILocation;
 import no.runsafe.framework.api.IWorld;
 import no.runsafe.framework.api.player.IPlayer;
@@ -70,8 +70,13 @@ public class Dergon extends EntityEnderDragon
 
 			for (IPlayer player : players)
 			{
-				// Skip the player if we're vanished or in creative mode.
-				if (player.isVanished() || player.getGameMode() == GameMode.CREATIVE || isRidingPlayer(player.getName()))
+				// Skip the player if we're vanished or in creative or spectator mode.
+				if (
+						player.isVanished() ||
+						player.getGameMode() == GameMode.CREATIVE ||
+						player.getGameMode() == GameMode.SPECTATOR ||
+						isRidingPlayer(player.getName())
+				)
 					continue;
 
 				ILocation playerLocation = player.getLocation();
@@ -136,7 +141,14 @@ public class Dergon extends EntityEnderDragon
 			f = (random.nextFloat() - 0.5F) * 8.0F;
 			f1 = (random.nextFloat() - 0.5F) * 4.0F;
 			f2 = (random.nextFloat() - 0.5F) * 8.0F;
-			world.addParticle("largeexplode", locX + (double) f, locY + 2.0D + (double) f1, locZ + (double) f2, 0.0D, 0.0D, 0.0D);
+			world.addParticle(
+					EnumParticle.EXPLOSION_LARGE,
+					locX + (double) f,
+					locY + 2.0D + (double) f1,
+					locZ + (double) f2,
+					0.0D,
+					0.0D,
+					0.0D);
 		}
 		else
 		{
