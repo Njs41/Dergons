@@ -10,6 +10,7 @@ import no.runsafe.framework.minecraft.entity.RunsafeFallingBlock;
 import org.bukkit.GameMode;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -603,9 +604,80 @@ public class Dergon extends EntityEnderDragon
 	@Override
 	protected void aZ()
 	{
-		super.aZ();
-		if (this.by == 200)
+		if(this.dead)
+			return;
+
+		++this.by;
+		if(this.by >= 180 && this.by < 200)
+		{
+			this.world.addParticle(
+					EnumParticle.EXPLOSION_HUGE,
+					this.locX + (random.nextFloat() - 0.5D) * 8.0D,
+					this.locY + (random.nextFloat() - 0.5F) * 4.0F + 2.0D,
+					this.locZ + (random.nextFloat() - 0.5D) * 8.0D,
+					0.0D,
+					0.0D,
+					0.0D,
+					new int[0]
+			);
+		}
+
+		//Play dragon death sound to everyone within a certain radius
+		if(!this.world.isClientSide)
+		{
+			if(this.by == 1)
+			{
+				int viewDistance = world.getServer().getViewDistance() * 16;
+				Iterator playerIterator = MinecraftServer.getServer().getPlayerList().players.iterator();
+
+				label56:
+				while(true)
+				{
+					EntityPlayer player;
+					double deltaX;
+					double deltaZ;
+					double distanceSquared;
+					do
+					{
+						if(!playerIterator.hasNext())
+							break label56;
+
+						player = (EntityPlayer) playerIterator.next();
+						deltaX = this.locX - player.locX;
+						deltaZ = this.locZ - player.locZ;
+						distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
+					}
+					while(world.spigotConfig.dragonDeathSoundRadius > 0
+						&& distanceSquared > (world.spigotConfig.dragonDeathSoundRadius * world.spigotConfig.dragonDeathSoundRadius)
+					);
+
+					double xLocation = locX;
+					double zLocation = locZ;
+					if(distanceSquared > (viewDistance * viewDistance))
+					{
+						double deltaLength = Math.sqrt(distanceSquared);
+						xLocation = player.locX + deltaX / deltaLength * viewDistance;
+						zLocation = player.locZ + deltaZ / deltaLength * viewDistance;
+					}
+					player.playerConnection.sendPacket(
+							new PacketPlayOutWorldEvent(
+									1018,
+									new BlockPosition(xLocation, locY, zLocation),
+									0,
+									true
+							)
+					);
+				}
+			}
+		}
+		//When dragon death scene is over, kill dragon.
+		if(this.by == 200)
+		{
+			if(!this.world.isClientSide)
+				this.die();
+
 			handler.handleDergonDeath(this);
+		}
 	}
 
 	/**
