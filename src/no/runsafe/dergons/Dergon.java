@@ -596,6 +596,59 @@ public class Dergon extends EntityEnderDragon
 	}
 
 	/**
+	 * Deal damage via dergon complex part.
+	 * @param entitycomplexpart Complex part to damage.
+	 * @param damagesource Source of damage.
+	 * @param f Amount of damage.
+	 * @return True if damaged.
+	 */
+	@Override
+	public boolean a(EntityComplexPart entitycomplexpart, DamageSource damagesource, float f)
+	{
+		if(entitycomplexpart != this.bn)
+			f = f / 4.0F + 1.0F;
+
+		float yawRad = this.yaw * (float) Math.PI / 180.0F;
+		float sinYaw = (float) Math.sin(yawRad);
+		float cosYaw = (float) Math.cos(yawRad);
+		a = locX + ((random.nextFloat() - 0.5F) * 2.0F) + (sinYaw * 5.0F);
+		b = locY + (random.nextFloat() * 3.0F) + 1.0D;
+		c = locZ + ((random.nextFloat() - 0.5F) * 2.0F) - (cosYaw * 5.0F);
+		target = null;
+		if(damagesource.getEntity() instanceof EntityHuman || damagesource.isExplosion())
+			this.dealDamage(damagesource, f);
+
+		return true;
+	}
+
+	/**
+	 * Deals damage to Dergon.
+	 * @param damagesource Source of damage
+	 * @param f Amount of damage.
+	 * @return false
+	 */
+	@Override
+	public boolean damageEntity(DamageSource damagesource, float f) {
+		if(damagesource instanceof EntityDamageSource && ((EntityDamageSource)damagesource).w())
+			this.dealDamage(damagesource, f);
+
+		return false;
+	}
+
+	/**
+	 * Deals damage to Dergon
+	 * @param damagesource Source of damage.
+	 * @param f Amount of damage.
+	 * @return True if damaged.
+	 */
+	@Override
+	protected boolean dealDamage(DamageSource damagesource, float f)
+	{
+		return super.damageEntity(damagesource, f);
+	}
+
+
+	/**
 	 * Handle dergon death.
 	 * Names of this function in various spigot versions:
 	 * v1_7_R3: aE
