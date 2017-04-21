@@ -609,6 +609,15 @@ public class Dergon extends EntityEnderDragon
 	}
 
 	/**
+	 * Gets complex parts.
+	 * @return Complex parts.
+	 */
+	public Entity[] getComplexParts()
+	{
+		return this.children;
+	}
+
+	/**
 	 * Gets the world the dergon is in.
 	 * @return World the dergon is in.
 	 */
