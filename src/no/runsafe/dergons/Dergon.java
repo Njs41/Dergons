@@ -114,6 +114,15 @@ public class Dergon extends EntityEnderDragon
 	private EntityComplexPart dergonTailSection2 = br;
 
 	/**
+	 * Initialize attributes.
+	 */
+	protected void initAttributes()
+	{
+		super.initAttributes();
+		this.getAttributeInstance(GenericAttributes.maxHealth).setValue(200.0D);
+	}
+
+	/**
 	 * Selects new player target.
 	 */
 	private void updateCurrentTarget()
