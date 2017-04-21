@@ -752,6 +752,15 @@ public class Dergon extends EntityEnderDragon
 	}
 
 	/**
+	 * Gets the world the dergon is in.
+	 * @return World the dergon is in.
+	 */
+	public World a()
+	{
+		return this.world;
+	}
+
+	/**
 	 * Checks if player should be targeted.
 	 * Will not return true if player is vanished, dead, in creative, or in spectator mode.
 	 * @param player Person to consider targeting.
