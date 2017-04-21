@@ -190,6 +190,30 @@ public class Dergon extends EntityEnderDragon
 	}
 
 	/**
+	 * Gets the movement offset.
+	 * @param i
+	 * @param f
+	 * @return Movement offset
+	 */
+	private double[] getMoveOffset(int i, float f) {
+		if(this.getHealth() <= 0.0F)
+			f = 0.0F;
+
+		f = 1.0F - f;
+		int j = bl - i & 63;
+		int k = bl - i - 1 & 63;
+		double[] movementOffset = new double[3];
+		double d0 = bk[j][0];
+		double d1 = trimDegrees(this.bk[k][0] - d0);
+		movementOffset[0] = d0 + d1 * f;
+		d0 = bk[j][1];
+		d1 = bk[k][1] - d0;
+		movementOffset[1] = d0 + d1 * f;
+		movementOffset[2] = bk[j][2] + (bk[k][2] - bk[j][2]) * f;
+		return movementOffset;
+	}
+
+	/**
 	 * Update method for Dergons.
 	 * Names of this function in various spigot versions:
 	 * v1_7_R3: e
@@ -380,8 +404,8 @@ public class Dergon extends EntityEnderDragon
 			dergonWing0.width = 4.0F;
 			dergonWing1.length = 3.0F;
 			dergonWing1.width = 4.0F;
-			//b(int, float) gets movement offsets.
-			float f1 = (float) (b(5, 1.0F)[1] - b(10, 1.0F)[1]) * 10.0F / 180.0F * (float) Math.PI;
+
+			float f1 = (float) (getMoveOffset(5, 1.0F)[1] - getMoveOffset(10, 1.0F)[1]) * 10.0F / 180.0F * (float) Math.PI;
 			float cosF1 = (float) Math.cos(f1);
 			float sinF1 = (float) -Math.sin(f1);
 			float yawRad = yaw * (float) Math.PI / 180.0F;
@@ -423,8 +447,8 @@ public class Dergon extends EntityEnderDragon
 				hitEntities(world.getEntities(this, dergonHead.getBoundingBox().grow(1.0D, 1.0D, 1.0D)));
 			}
 
-			double[] adouble = b(5, 1.0F);
-			double[] adouble1 = b(0, 1.0F);
+			double[] adouble = getMoveOffset(5, 1.0F);
+			double[] adouble1 = getMoveOffset(0, 1.0F);
 
 			float f3 = (float) Math.sin(yaw * (float) Math.PI / 180.0F - bc * 0.01F);
 			float f13 = (float) Math.cos(yaw * (float) Math.PI / 180.0F - bc * 0.01F);
@@ -450,7 +474,7 @@ public class Dergon extends EntityEnderDragon
 					case 2: tailSection = dergonTailSection2; break;
 				}
 
-				double[] adouble2 = b(12 + tailNumber * 2, 1.0F);
+				double[] adouble2 = getMoveOffset(12 + tailNumber * 2, 1.0F);
 				float f14 = yaw * (float) Math.PI / 180.0F + (float) trimDegrees(adouble2[0] - adouble[0]) * (float) Math.PI / 180.0F;
 				float sinF14 = (float) Math.sin(f14);
 				float cosF14 = (float) Math.cos(f14);
