@@ -6,10 +6,12 @@ import no.runsafe.framework.api.IWorld;
 import no.runsafe.framework.api.player.IPlayer;
 import no.runsafe.framework.internal.wrapper.ObjectUnwrapper;
 import no.runsafe.framework.minecraft.Item;
+import no.runsafe.framework.minecraft.Sound;
 import no.runsafe.framework.minecraft.entity.RunsafeFallingBlock;
 import org.bukkit.GameMode;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -570,9 +572,43 @@ public class Dergon extends EntityEnderDragon
 	@Override
 	protected void aZ()
 	{
-		super.aZ();
-		if (this.by == 200)
+		if (dead)
+			return;
+
+		// Increment death ticks.
+		by++;
+		// Make explosion particles when the dergon is almost dead.
+		if (by >= 180 && by <= 200)
+		{
+			world.addParticle(
+				EnumParticle.EXPLOSION_HUGE,
+				locX + (random.nextFloat() - 0.5F) * 8.0F,
+				locY + (random.nextFloat() - 0.5F) * 4.0F + 2.0D,
+				locZ + (random.nextFloat() - 0.5F) * 8.0F,
+				0.0D,
+				0.0D,
+				0.0D
+			);
+		}
+
+		//Play dragon death sound as dergon death animation starts.
+		if (by == 1)
+			targetWorld.getLocation(locX, locY, locZ).playSound(
+				Sound.Creature.EnderDragon.Death, 32.0F, 1.0F
+			);
+
+		// Slowly move dergon upwards as it dies.
+		move(0, 0.1, 0);
+		aI = yaw += 20.0F;
+
+		// When animation is finished, slay the dergon.
+		if(by == 200)
+		{
+			if(!world.isClientSide)
+				die();
+
 			handler.handleDergonDeath(this);
+		}
 	}
 
 	/**
