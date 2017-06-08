@@ -383,7 +383,10 @@ public class Dergon extends EntityEnderDragon
 			dergonWing1.length = 3.0F;
 			dergonWing1.width = 4.0F;
 			//b(int, float) gets movement offsets.
-			float f1 = (float) (b(5, 1.0F)[1] - b(10, 1.0F)[1]) * 10.0F / 180.0F * (float) Math.PI;
+			float f1 = (float) (
+				getMovementOffset(5, 1.0F)[1]
+				- getMovementOffset(10, 1.0F)[1]
+			) * 10.0F / 180.0F * (float) Math.PI;
 			float cosF1 = (float) Math.cos(f1);
 			float sinF1 = (float) -Math.sin(f1);
 			float yawRad = yaw * (float) Math.PI / 180.0F;
@@ -425,8 +428,8 @@ public class Dergon extends EntityEnderDragon
 				hitEntities(world.getEntities(this, dergonHead.getBoundingBox().grow(1.0D, 1.0D, 1.0D)));
 			}
 
-			double[] adouble = b(5, 1.0F);
-			double[] adouble1 = b(0, 1.0F);
+			double[] adouble = getMovementOffset(5, 1.0F);
+			double[] adouble1 = getMovementOffset(0, 1.0F);
 
 			float f3 = (float) Math.sin(yaw * (float) Math.PI / 180.0F - bc * 0.01F);
 			float f13 = (float) Math.cos(yaw * (float) Math.PI / 180.0F - bc * 0.01F);
@@ -452,7 +455,7 @@ public class Dergon extends EntityEnderDragon
 					case 2: tailSection = dergonTailSection2; break;
 				}
 
-				double[] adouble2 = b(12 + tailNumber * 2, 1.0F);
+				double[] adouble2 = getMovementOffset(12 + tailNumber * 2, 1.0F);
 				float f14 = yaw * (float) Math.PI / 180.0F + (float) trimDegrees(adouble2[0] - adouble[0]) * (float) Math.PI / 180.0F;
 				float sinF14 = (float) Math.sin(f14);
 				float cosF14 = (float) Math.cos(f14);
@@ -541,6 +544,31 @@ public class Dergon extends EntityEnderDragon
 			return degreeValue + 360.0D;
 
 		return degreeValue;
+	}
+
+	/**
+	 * Gets a movement offset. Useful for calculating trailing tail and neck positions.
+	 * @param bufferIndexOffset Offset for the ring buffer.
+	 * @param partialTicks Ticks that are partial.
+	 * @return A double [2] array with movement offsets.
+	 * [0] = yaw offset, [1] = y offset
+	 */
+	private double[] getMovementOffset(int bufferIndexOffset, float partialTicks)
+	{
+		if(getHealth() <= 0.0F)
+			partialTicks = 0.0F;
+
+		partialTicks = 1.0F - partialTicks;
+		int j = bl - bufferIndexOffset & 63;
+		int k = bl - bufferIndexOffset - 1 & 63;
+
+		double[] movementOffset = new double[2];
+		//Set yaw offset
+		movementOffset[0] = bk[j][0] + trimDegrees(bk[k][0] - bk[j][0]) * partialTicks;
+		//set y offset.
+		movementOffset[1] = bk[j][1] + ((bk[k][1] - bk[j][1]) * partialTicks);
+
+		return movementOffset;
 	}
 
 	/**
