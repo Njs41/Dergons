@@ -122,7 +122,7 @@ public class Dergon extends EntityEnderDragon
 	{
 		bw = false;
 
-		ILocation dergonLocation = targetWorld.getLocation(locX, locY, locZ);
+		ILocation dergonLocation = getLocation();
 
 		if (dergonLocation != null && flyOffLocation != null && random.nextFloat() == 0.1F)
 			return;
@@ -213,7 +213,7 @@ public class Dergon extends EntityEnderDragon
 		long pct = Math.round((getHealth() / getMaxHealth()) * 100);
 		setCustomName("Dergon (" + pct + "%)");
 
-		ILocation dergonLocation = targetWorld.getLocation(locX, locY, locZ);
+		ILocation dergonLocation = getLocation();
 		if (targetEntity != null && dergonLocation != null && random.nextFloat() < 0.2F)
 			((RunsafeFallingBlock) targetWorld.spawnFallingBlock(dergonLocation, Item.Unavailable.Fire)).setDropItem(false);
 
@@ -593,7 +593,7 @@ public class Dergon extends EntityEnderDragon
 
 		//Play dragon death sound as dergon death animation starts.
 		if (by == 1)
-			targetWorld.getLocation(locX, locY, locZ).playSound(
+			getLocation().playSound(
 				Sound.Creature.EnderDragon.Death, 32.0F, 1.0F
 			);
 
@@ -618,6 +618,15 @@ public class Dergon extends EntityEnderDragon
 	public IWorld getDergonWorld()
 	{
 		return targetWorld;
+	}
+
+	/**
+	 * Gets the dergon's current ILocation.
+	 * @return Location.
+	 */
+	public ILocation getLocation()
+	{
+		return targetWorld.getLocation(locX, locY, locZ);
 	}
 
 	/**
