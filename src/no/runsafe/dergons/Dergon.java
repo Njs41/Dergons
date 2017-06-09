@@ -206,18 +206,7 @@ public class Dergon extends EntityEnderDragon
 		bu = bv; // Update previous animation time.
 
 		if (getHealth() <= 0.0F) // Check if the dragon is dead.
-		{
-			// If we're dead, play a random explosion effect at a random offset to it's corpse.
-			world.addParticle(
-				EnumParticle.EXPLOSION_LARGE,
-				locX + (double) (random.nextFloat() - 0.5F) * 8.0F,
-				locY + (double) (random.nextFloat() - 0.5F) * 4.0F + 2.0D,
-				locZ + (double) (random.nextFloat() - 0.5F) * 8.0F,
-				0.0D,
-				0.0D,
-				0.0D
-			);
-		}
+			randomExplosion(); // If we're dead, play a random explosion effect at a random offset to it's corpse.
 		else
 		{
 			float f = 0.2F / ((float) sqrt(motX * motX + motZ * motZ) * 10.0F + 1.0F);
@@ -606,17 +595,7 @@ public class Dergon extends EntityEnderDragon
 		deathTicks++;
 		// Make explosion particles when the dergon is almost dead.
 		if (deathTicks >= 180 && deathTicks <= 200)
-		{
-			world.addParticle(
-				EnumParticle.EXPLOSION_HUGE,
-				locX + (random.nextFloat() - 0.5F) * 8.0F,
-				locY + (random.nextFloat() - 0.5F) * 4.0F + 2.0D,
-				locZ + (random.nextFloat() - 0.5F) * 8.0F,
-				0.0D,
-				0.0D,
-				0.0D
-			);
-		}
+			randomExplosion();
 
 		//Play dragon death sound as dergon death animation starts.
 		if (deathTicks == 1)
@@ -654,6 +633,20 @@ public class Dergon extends EntityEnderDragon
 	public ILocation getLocation()
 	{
 		return targetWorld.getLocation(locX, locY, locZ);
+	}
+
+	/**
+	 * Creates random explosions around the dergon.
+	 */
+	private void randomExplosion()
+	{
+		world.addParticle(
+			EnumParticle.EXPLOSION_HUGE,
+			locX + (random.nextFloat() - 0.5) * 8,
+			locY + (random.nextFloat() - 0.5) * 4 + 2,
+			locZ + (random.nextFloat() - 0.5) * 8,
+			0.0D, 0.0D, 0.0D
+		);
 	}
 
 	/**
