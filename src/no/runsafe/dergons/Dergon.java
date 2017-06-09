@@ -56,6 +56,13 @@ public class Dergon extends EntityEnderDragon
 		this.targetLocation = targetLocation;
 		this.targetWorld = targetLocation.getWorld();
 		this.dergonID = dergonID;
+
+		// Load up the position buffer with current values.
+		for (int i = 0; i < positionBuffer.length; ++i)
+		{
+			positionBuffer[i][0] = (double) yaw;
+			positionBuffer[i][1] = locY;
+		}
 	}
 
 	/**
@@ -210,15 +217,6 @@ public class Dergon extends EntityEnderDragon
 		bv += f;
 
 		yaw = (float) trimDegrees(yaw);
-		// If the dergon was just created load up the buffer with current values.
-		if (positionBufferIndex < 0)
-		{
-			for (int i = 0; i < positionBuffer.length; ++i)
-			{
-				positionBuffer[i][0] = (double) yaw;
-				positionBuffer[i][1] = locY;
-			}
-		}
 
 		// Increment the buffer index.
 		if (++positionBufferIndex == positionBuffer.length)
