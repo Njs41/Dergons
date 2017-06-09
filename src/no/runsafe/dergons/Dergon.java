@@ -29,8 +29,6 @@ import static java.lang.Math.toRadians;
  *
  * Variables in EntityEnderDragon:
  * Type                 v1_8_R3  v1_9_R2  v1_10_R1  v1_11_R1
- * public double[][]    bk       b        b         b           Buffer array for the last 64 Y-positions and yaw rotations.
- * public int           bl       c        c         c           Ring buffer index for yaw/Y-position buffer.
  * public float         bu       bD       bE        bD          Previous animation time.
  * public float         bv       bE       bF        bE          Animation time.
  *
@@ -71,6 +69,10 @@ public class Dergon extends EntityEnderDragon
 	private boolean changeTarget = false;
 
 	private int deathTicks = 0;
+
+	// Store the dergon's last 64 vertical and yaw positions.
+	private double[][] positionBuffer = new double[64][2];
+	private int positionBufferIndex = -1;
 
 	/*
 	 * Dergon bodily appendages.
@@ -209,21 +211,21 @@ public class Dergon extends EntityEnderDragon
 
 		yaw = (float) trimDegrees(yaw);
 		// If the dergon was just created load up the buffer with current values.
-		if (bl < 0)
+		if (positionBufferIndex < 0)
 		{
-			for (int i = 0; i < bk.length; ++i)
+			for (int i = 0; i < positionBuffer.length; ++i)
 			{
-				bk[i][0] = (double) yaw;
-				bk[i][1] = locY;
+				positionBuffer[i][0] = (double) yaw;
+				positionBuffer[i][1] = locY;
 			}
 		}
 
 		// Increment the buffer index.
-		if (++bl == bk.length)
-			bl = 0;
+		if (++positionBufferIndex == positionBuffer.length)
+			positionBufferIndex = 0;
 
-		bk[bl][0] = (double) yaw;
-		bk[bl][1] = locY;
+		positionBuffer[positionBufferIndex][0] = (double) yaw;
+		positionBuffer[positionBufferIndex][1] = locY;
 
 		//Get target position relative to Dergon
 		double targetPosX = targetX - locX;
@@ -492,14 +494,16 @@ public class Dergon extends EntityEnderDragon
 			partialTicks = 0.0F;
 
 		partialTicks = 1.0F - partialTicks;
-		int j = bl - bufferIndexOffset & 63;
-		int k = bl - bufferIndexOffset - 1 & 63;
+		int j = positionBufferIndex - bufferIndexOffset & 63;
+		int k = positionBufferIndex - bufferIndexOffset - 1 & 63;
 
 		double[] movementOffset = new double[2];
 		//Set yaw offset
-		movementOffset[0] = bk[j][0] + trimDegrees(bk[k][0] - bk[j][0]) * partialTicks;
+		movementOffset[0] = positionBuffer[j][0]
+			+ trimDegrees(positionBuffer[k][0] - positionBuffer[j][0]) * partialTicks;
 		//set y offset.
-		movementOffset[1] = bk[j][1] + ((bk[k][1] - bk[j][1]) * partialTicks);
+		movementOffset[1] = positionBuffer[j][1]
+			+ ((positionBuffer[k][1] - positionBuffer[j][1]) * partialTicks);
 
 		return movementOffset;
 	}
