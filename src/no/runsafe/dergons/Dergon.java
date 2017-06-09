@@ -69,6 +69,9 @@ public class Dergon extends EntityEnderDragon
 	private double targetY = 100;
 	private double targetZ = 0;
 
+	// Forces selection of a new flight target when true.
+	private boolean changeTarget = false;
+
 	/*
 	 * Dergon bodily appendages.
 	 * Only their hitboxes.
@@ -96,7 +99,7 @@ public class Dergon extends EntityEnderDragon
 	 */
 	private void updateCurrentTarget()
 	{
-		bw = false;
+		changeTarget = false;
 
 		ILocation dergonLocation = getLocation();
 
@@ -279,7 +282,7 @@ public class Dergon extends EntityEnderDragon
 					targetZ += random.nextGaussian() * 2.0D;
 				}
 
-				if (bw || targetDistance < 100.0D || targetDistance > 22500.0D || positionChanged || F)
+				if (changeTarget || targetDistance < 100.0D || targetDistance > 22500.0D || positionChanged || F)
 					updateCurrentTarget();
 
 				targetPosY /= sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ);
