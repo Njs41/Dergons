@@ -37,13 +37,7 @@ import static java.lang.Math.toRadians;
  *
  * EntityLiving.Class:
  * protected int        bc       bh       bi        bh          Position rotation increment
- * protected double     bd       bi       bj        bi          X position entity will be set to.
- * protected double     be       bj       bk        bj          Y position entity will be set to.
- * protected double     bf       bk       bl        bk          Z position entity will be set to.
- * protected double     bg       bl       bm        bl          Yaw position entity will be set to.
- * protected double     bh       bm       bn        bm          Pitch position entity will be set to.
  * public float         aI       aN       aO        aN          Might have something to do with the yaw offset?
- * public float         aJ       aO       aP        aO          Definitely has something to do with the yaw offset.
  * protected float      bb       bg       bh        bg          Random Yaw Velocity
  */
 
