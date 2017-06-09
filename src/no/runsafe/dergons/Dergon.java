@@ -15,6 +15,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.atan2;
+import static java.lang.Math.cos;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.toDegrees;
+import static java.lang.Math.toRadians;
+
 /*
  * Names of obfuscated variables in various spigot versions:
  *
@@ -24,7 +33,6 @@ import java.util.Random;
  * public int           bl       c        c         c           Ring buffer index for yaw/Y-position buffer.
  * public float         bu       bD       bE        bD          Previous animation time.
  * public float         bv       bE       bF        bE          Animation time.
- * public boolean       bw       Removed  N/A       N/A         Forces selection of a new flight target when true.
  * public boolean       bx       bF       bG        bF          True when slowed.
  * public int           by       bG       bH        bG          Death Ticks.
  *
@@ -186,8 +194,8 @@ public class Dergon extends EntityEnderDragon
 
 		if (world.isClientSide)
 		{
-			float animationPoint = (float) Math.cos(bv * Math.PI * 2.0F);
-			float previousAnimationPoint = (float) Math.cos(bu * Math.PI * 2.0F);
+			float animationPoint = (float) cos(bv * PI * 2.0F);
+			float previousAnimationPoint = (float) cos(bu * PI * 2.0F);
 			if (previousAnimationPoint <= -0.3F && animationPoint >= -0.3F)
 				world.a(locX, locY, locZ, "mob.enderdragon.wings", 5.0F, 0.8F + random.nextFloat() * 0.3F, false);
 		}
@@ -209,8 +217,8 @@ public class Dergon extends EntityEnderDragon
 		}
 		else
 		{
-			float f = 0.2F / ((float) Math.sqrt(motX * motX + motZ * motZ) * 10.0F + 1.0F);
-			f *= (float) Math.pow(2.0D, motY);
+			float f = 0.2F / ((float) sqrt(motX * motX + motZ * motZ) * 10.0F + 1.0F);
+			f *= (float) pow(2.0D, motY);
 			bv += (bx ? f * 0.5F : f);
 
 			yaw = (float) trimDegrees(yaw);
@@ -257,7 +265,7 @@ public class Dergon extends EntityEnderDragon
 					targetZ = targetEntity.locZ;
 					double xDistanceToTarget = targetX - locX;
 					double yDistanceToTarget = targetZ - locZ;
-					double distanceToTarget = Math.sqrt(xDistanceToTarget * xDistanceToTarget + yDistanceToTarget * yDistanceToTarget);
+					double distanceToTarget = sqrt(xDistanceToTarget * xDistanceToTarget + yDistanceToTarget * yDistanceToTarget);
 					double ascendDistance = 0.4000000059604645D + distanceToTarget / 80.0D - 1.0D;
 
 					if (ascendDistance > 10.0D)
@@ -274,7 +282,7 @@ public class Dergon extends EntityEnderDragon
 				if (bw || targetDistance < 100.0D || targetDistance > 22500.0D || positionChanged || F)
 					updateCurrentTarget();
 
-				targetPosY /= Math.sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ);
+				targetPosY /= sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ);
 				final float Y_LIMIT = 0.6F;
 				if (targetPosY < (double) (-Y_LIMIT))
 					targetPosY = (double) (-Y_LIMIT);
@@ -284,7 +292,7 @@ public class Dergon extends EntityEnderDragon
 
 				motY += targetPosY * 0.10000000149011612D;
 				yaw = (float) trimDegrees(yaw);
-				double targetDirection = 180.0D - Math.toDegrees(Math.atan2(targetPosX, targetPosZ));
+				double targetDirection = 180.0D - toDegrees(atan2(targetPosX, targetPosZ));
 				double targetHeadingDifference = trimDegrees(targetDirection - (double) yaw);
 
 				if (targetHeadingDifference > 50.0D)
@@ -299,9 +307,9 @@ public class Dergon extends EntityEnderDragon
 						targetZ - locZ
 				).a();// .a() -> Normalize values
 				Vec3D vec3d1 = new Vec3D(
-						Math.sin(Math.toRadians(yaw)),
+						sin(toRadians(yaw)),
 						motY,
-						(-Math.cos(Math.toRadians(yaw)))
+						(-cos(toRadians(yaw)))
 				).a();// .a() -> Normalize values
 				float f4 = (float) (vec3d1.b(vec3d) + 0.5D) / 1.5F;
 
@@ -309,8 +317,8 @@ public class Dergon extends EntityEnderDragon
 					f4 = 0.0F;
 
 				bb *= 0.8F;
-				float f5 = (float) Math.sqrt(motX * motX + motZ * motZ) + 1.0F;
-				double d10 = Math.sqrt(motX * motX + motZ * motZ) + 1.0D;
+				float f5 = (float) sqrt(motX * motX + motZ * motZ) + 1.0F;
+				double d10 = sqrt(motX * motX + motZ * motZ) + 1.0D;
 
 				if (d10 > 40.0D)
 					d10 = 40.0D;
@@ -350,15 +358,15 @@ public class Dergon extends EntityEnderDragon
 			dergonWing1.length = 3.0F;
 			dergonWing1.width = 4.0F;
 
-			float f1 = (float) Math.toRadians((
+			float f1 = (float) toRadians((
 				getMovementOffset(5, 1.0F)[1]
 				- getMovementOffset(10, 1.0F)[1]
 			) * 10.0F);
-			float cosF1 = (float) Math.cos(f1);
-			float sinF1 = (float) -Math.sin(f1);
-			float yawRad = (float) Math.toRadians(yaw);
-			float sinYaw = (float) Math.sin(yawRad);
-			float cosYaw = (float) Math.cos(yawRad);
+			float cosF1 = (float) cos(f1);
+			float sinF1 = (float) -sin(f1);
+			float yawRad = (float) toRadians(yaw);
+			float sinYaw = (float) sin(yawRad);
+			float cosYaw = (float) cos(yawRad);
 
 			//t_() means on update.
 			dergonBody.t_();
@@ -398,8 +406,8 @@ public class Dergon extends EntityEnderDragon
 			double[] adouble = getMovementOffset(5, 1.0F);
 			double[] adouble1 = getMovementOffset(0, 1.0F);
 
-			float f3 = (float) Math.sin(Math.toRadians(yaw) - bc * 0.01F);
-			float f13 = (float) Math.cos(Math.toRadians(yaw) - bc * 0.01F);
+			float f3 = (float) sin(toRadians(yaw) - bc * 0.01F);
+			float f13 = (float) cos(toRadians(yaw) - bc * 0.01F);
 
 			dergonHead.t_();
 			dergonHead.setPositionRotation(
@@ -423,9 +431,9 @@ public class Dergon extends EntityEnderDragon
 				}
 
 				double[] adouble2 = getMovementOffset(12 + tailNumber * 2, 1.0F);
-				float f14 = (float) Math.toRadians(yaw + trimDegrees(adouble2[0] - adouble[0]));
-				float sinF14 = (float) Math.sin(f14);
-				float cosF14 = (float) Math.cos(f14);
+				float f14 = (float) toRadians(yaw + trimDegrees(adouble2[0] - adouble[0]));
+				float sinF14 = (float) sin(f14);
+				float cosF14 = (float) cos(f14);
 				final float ONE_POINT_FIVE = 1.5F;
 				float movementMultiplier = (tailNumber + 1) * 2.0F; // 2, 4, 6
 
@@ -458,9 +466,9 @@ public class Dergon extends EntityEnderDragon
 	public boolean a(EntityComplexPart bodyPart, DamageSource damager, float damageValue)
 	{
 		// Recalculate target location
-		double yawRadian = Math.toRadians(yaw);
-		double xDirection = Math.sin(yawRadian);
-		double zDirection = Math.cos(yawRadian);
+		double yawRadian = toRadians(yaw);
+		double xDirection = sin(yawRadian);
+		double zDirection = cos(yawRadian);
 		targetX = locX + ((random.nextDouble() - 0.5) * 2) + (xDirection * 5);
 		targetY = locY + (random.nextDouble() * 3) + 1;
 		targetZ = locZ + ((random.nextDouble() - 0.5) * 2) - (zDirection * 5);
