@@ -79,8 +79,8 @@ public class Dergon extends EntityEnderDragon
 	 * v1_8_R3    v1_9_R2    v1_10_R1    v1_11_R1
 	 * bn         bv         bw          bv        Head
 	 * bo         bx         by          bx        Body
-	 * bs         bB         bC          bB        Wing
-	 * bt         bC         bD          bC        Wing
+	 * bs         bB         bC          bB        Right Wing
+	 * bt         bC         bD          bC        Left Wing
 	 * bp         by         bz          by        Tail section closest to body
 	 * bq         bz         bA          bz        Middle tail section
 	 * br         bA         bB          bA        Last tail section
@@ -88,8 +88,8 @@ public class Dergon extends EntityEnderDragon
 	 */
 	private EntityComplexPart dergonHead = bn;
 	private EntityComplexPart dergonBody = bo;
-	private EntityComplexPart dergonWing0 = bs;
-	private EntityComplexPart dergonWing1 = bt;
+	private EntityComplexPart dergonWingRight = bs;
+	private EntityComplexPart dergonWingLeft = bt;
 	private EntityComplexPart dergonTailSection0 = bp;
 	private EntityComplexPart dergonTailSection1 = bq;
 	private EntityComplexPart dergonTailSection2 = br;
@@ -203,7 +203,7 @@ public class Dergon extends EntityEnderDragon
 				world.a(locX, locY, locZ, "mob.enderdragon.wings", 5.0F, 0.8F + random.nextFloat() * 0.3F, false);
 		}
 
-		bu = bv;
+		bu = bv; // Update previous animation time.
 
 		if (getHealth() <= 0.0F) // Check if the dragon is dead.
 		{
@@ -225,6 +225,7 @@ public class Dergon extends EntityEnderDragon
 			bv += f;
 
 			yaw = (float) trimDegrees(yaw);
+			// If the dergon was just created load up the buffer with current values.
 			if (bl < 0)
 			{
 				for (int i = 0; i < bk.length; ++i)
@@ -234,6 +235,7 @@ public class Dergon extends EntityEnderDragon
 				}
 			}
 
+			// Increment the buffer index.
 			if (++bl == bk.length)
 				bl = 0;
 
@@ -242,7 +244,7 @@ public class Dergon extends EntityEnderDragon
 
 			if (world.isClientSide)
 			{
-				if (bc > 0)
+				if (bc > 0) // If There is a rotation increment, rotate the dergon.
 				{
 					double newXPosition = locX + (bd - locX) / bc;
 					double newYPosition = locY + (be - locY) / bc;
@@ -250,7 +252,7 @@ public class Dergon extends EntityEnderDragon
 					double newYawIncrement = trimDegrees(bg - (double) yaw);
 					yaw = (float) ((double) yaw + newYawIncrement / bc);
 					pitch = (float) ((double) pitch + (bh - (double) pitch) / bc);
-					--bc;
+					--bc; // Decrease rotation increment.
 					setPosition(newXPosition, newYPosition, newZPosition);
 					setYawPitch(yaw, pitch);
 				}
@@ -304,7 +306,7 @@ public class Dergon extends EntityEnderDragon
 				if (targetHeadingDifference < -50.0D)
 					targetHeadingDifference = -50.0D;
 
-				Vec3D vec3d = new Vec3D(
+				Vec3D relativeTargetCoordinates = new Vec3D(
 						targetX - locX,
 						targetY - locY,
 						targetZ - locZ
@@ -314,28 +316,28 @@ public class Dergon extends EntityEnderDragon
 						motY,
 						(-cos(toRadians(yaw)))
 				).a();// .a() -> Normalize values
-				float f4 = (float) (vec3d1.b(vec3d) + 0.5D) / 1.5F;
+				float f4 = (float) (vec3d1.b(relativeTargetCoordinates) + 0.5D) / 1.5F;
 
 				if (f4 < 0.0F)
 					f4 = 0.0F;
 
-				bb *= 0.8F;
-				float f5 = (float) sqrt(motX * motX + motZ * motZ) + 1.0F;
-				double d10 = sqrt(motX * motX + motZ * motZ) + 1.0D;
+				bb *= 0.8F;  // Dampen the random yaw velocity.
+				double movementScalarTrimmed = sqrt(motX * motX + motZ * motZ) + 1;
+				float movementScalarStart = (float) movementScalarTrimmed;
 
-				if (d10 > 40.0D)
-					d10 = 40.0D;
+				if (movementScalarTrimmed > 40.0D)
+					movementScalarTrimmed = 40.0D;
 
-				bb = (float) ((double) bb + targetHeadingDifference * (0.699999988079071D / d10 / (double) f5));
+				bb = (float) ((double) bb + targetHeadingDifference * (0.699999988079071D / movementScalarTrimmed / movementScalarStart));
 				yaw += bb * 0.1F;
-				float f6 = (float) (2.0D / (d10 + 1.0D));
-				float f7 = 0.06F;
+				float f6 = (float) (2.0D / (movementScalarTrimmed + 1.0D));
+				float dampenerValue = 0.06F;
 
-				a(0.0F, -1.0F, f7 * (f4 * f6 + (1.0F - f6)));
+				a(0.0F, -1.0F, dampenerValue * (f4 * f6 + (1.0F - f6)));
 				move(motX, motY, motZ);
 
-				Vec3D vec3d2 = new Vec3D(motX, motY, motZ).a();
-				float f8 = (float) (vec3d2.b(vec3d1) + 1.0D) / 2.0F;
+				Vec3D movementVector = new Vec3D(motX, motY, motZ).a();
+				float f8 = (float) (movementVector.b(vec3d1) + 1.0D) / 2.0F;
 
 				f8 = 0.8F + 0.15F * f8;
 				motX *= (double) f8;
@@ -350,10 +352,10 @@ public class Dergon extends EntityEnderDragon
 			dergonTailSection2.width = dergonTailSection2.length = 2.0F;
 			dergonBody.length = 3.0F;
 			dergonBody.width = 5.0F;
-			dergonWing0.length = 2.0F;
-			dergonWing0.width = 4.0F;
-			dergonWing1.length = 3.0F;
-			dergonWing1.width = 4.0F;
+			dergonWingRight.length = 2.0F;
+			dergonWingRight.width = 4.0F;
+			dergonWingLeft.length = 3.0F;
+			dergonWingLeft.width = 4.0F;
 
 			float f1 = (float) toRadians((
 				getMovementOffset(5, 1.0F)[1]
@@ -375,8 +377,8 @@ public class Dergon extends EntityEnderDragon
 					0.0F
 			);
 
-			dergonWing0.t_();
-			dergonWing0.setPositionRotation(
+			dergonWingRight.t_();
+			dergonWingRight.setPositionRotation(
 					locX + (double) (cosYaw * 4.5F),
 					locY + 2.0D,
 					locZ + (double) (sinYaw * 4.5F),
@@ -384,8 +386,8 @@ public class Dergon extends EntityEnderDragon
 					0.0F
 			);
 
-			dergonWing1.t_();
-			dergonWing1.setPositionRotation(
+			dergonWingLeft.t_();
+			dergonWingLeft.setPositionRotation(
 					locX - (double) (cosYaw * 4.5F),
 					locY + 2.0D,
 					locZ - (double) (sinYaw * 4.5F),
@@ -395,22 +397,23 @@ public class Dergon extends EntityEnderDragon
 
 			if (!world.isClientSide && hurtTicks == 0)
 			{
-				launchEntities(world.getEntities(this, dergonWing0.getBoundingBox().grow(4.0D, 2.0D, 4.0D).shrink(0.0D, -2.0D, 0.0D)));
-				launchEntities(world.getEntities(this, dergonWing1.getBoundingBox().grow(4.0D, 2.0D, 4.0D).shrink(0.0D, -2.0D, 0.0D)));
+				launchEntities(world.getEntities(this, dergonWingRight.getBoundingBox().grow(4.0D, 2.0D, 4.0D).shrink(0.0D, -2.0D, 0.0D)));
+				launchEntities(world.getEntities(this, dergonWingLeft.getBoundingBox().grow(4.0D, 2.0D, 4.0D).shrink(0.0D, -2.0D, 0.0D)));
 				hitEntities(world.getEntities(this, dergonHead.getBoundingBox().grow(1.0D, 1.0D, 1.0D)));
 			}
 
-			double[] adouble = getMovementOffset(5, 1.0F);
-			double[] adouble1 = getMovementOffset(0, 1.0F);
+			double[] oldPosition = getMovementOffset(5, 1.0F);
+			double[] currentPosition = getMovementOffset(0, 1.0F);
 
-			float f3 = (float) sin(toRadians(yaw) - bc * 0.01F);
-			float f13 = (float) cos(toRadians(yaw) - bc * 0.01F);
+			float xDirectionIncremented = (float) sin(toRadians(yaw) - bc * 0.01F);
+			float zDirectionIncremented = (float) cos(toRadians(yaw) - bc * 0.01F);
 
+			// Make dergon's head hitbox point in the direction of motion.
 			dergonHead.t_();
 			dergonHead.setPositionRotation(
-					locX + (double) (f3 * 5.5F * cosF1),
-					locY + (adouble1[1] - adouble[1]) + (double) (sinF1 * 5.5F),
-					locZ - (double) (f13 * 5.5F * cosF1),
+					locX + (double) (xDirectionIncremented * 5.5F * cosF1),
+					locY + (currentPosition[1] - oldPosition[1]) + (double) (sinF1 * 5.5F),
+					locZ - (double) (zDirectionIncremented * 5.5F * cosF1),
 					0.0F,
 					0.0F
 			);
@@ -427,8 +430,8 @@ public class Dergon extends EntityEnderDragon
 					case 2: tailSection = dergonTailSection2; break;
 				}
 
-				double[] adouble2 = getMovementOffset(12 + tailNumber * 2, 1.0F);
-				float f14 = (float) toRadians(yaw + trimDegrees(adouble2[0] - adouble[0]));
+				double[] olderPosition = getMovementOffset(12 + tailNumber * 2, 1.0F);
+				float f14 = (float) toRadians(yaw + trimDegrees(olderPosition[0] - oldPosition[0]));
 				float sinF14 = (float) sin(f14);
 				float cosF14 = (float) cos(f14);
 				final float ONE_POINT_FIVE = 1.5F;
@@ -437,7 +440,7 @@ public class Dergon extends EntityEnderDragon
 				tailSection.t_();
 				tailSection.setPositionRotation(
 						locX - (double) ((sinYaw * ONE_POINT_FIVE + sinF14 * movementMultiplier) * cosF1),
-						locY + (adouble2[1] - adouble[1]) - (double) ((movementMultiplier + ONE_POINT_FIVE) * sinF1) + 1.5D,
+						locY + (olderPosition[1] - oldPosition[1]) - (double) ((movementMultiplier + ONE_POINT_FIVE) * sinF1) + 1.5D,
 						locZ + (double) ((cosYaw * ONE_POINT_FIVE + cosF14 * movementMultiplier) * cosF1),
 						0.0F,
 						0.0F
@@ -571,14 +574,14 @@ public class Dergon extends EntityEnderDragon
 	 * v1_8_R3: d
 	 * v1_9_R2/v1_10_R1/v1_11_R1: damageEntity0
 	 * @param source damage source
-	 * @param f Damage amount
+	 * @param damageValue Damage amount
 	 * @return True if damaged, false if not damaged.
 	 */
 	@Override
-	protected boolean d(DamageSource source, float f)
+	protected boolean d(DamageSource source, float damageValue)
 	{
 		if (ridingPlayer == null || !isRidingPlayer(source.getEntity().getName()))
-			return super.d(source, handler.handleDergonDamage(this, source, f));
+			return super.d(source, handler.handleDergonDamage(this, source, damageValue));
 
 		return false;
 	}
