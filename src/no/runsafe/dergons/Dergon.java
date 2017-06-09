@@ -209,13 +209,13 @@ public class Dergon extends EntityEnderDragon
 		{
 			// If we're dead, play a random explosion effect at a random offset to it's corpse.
 			world.addParticle(
-					EnumParticle.EXPLOSION_LARGE,
-					locX + (double) (random.nextFloat() - 0.5F) * 8.0F,
-					locY + (double) (random.nextFloat() - 0.5F) * 4.0F + 2.0D,
-					locZ + (double) (random.nextFloat() - 0.5F) * 8.0F,
-					0.0D,
-					0.0D,
-					0.0D
+				EnumParticle.EXPLOSION_LARGE,
+				locX + (double) (random.nextFloat() - 0.5F) * 8.0F,
+				locY + (double) (random.nextFloat() - 0.5F) * 4.0F + 2.0D,
+				locZ + (double) (random.nextFloat() - 0.5F) * 8.0F,
+				0.0D,
+				0.0D,
+				0.0D
 			);
 		}
 		else
@@ -307,14 +307,14 @@ public class Dergon extends EntityEnderDragon
 					targetHeadingDifference = -50.0D;
 
 				Vec3D relativeTargetCoordinates = new Vec3D(
-						targetX - locX,
-						targetY - locY,
-						targetZ - locZ
+					targetX - locX,
+					targetY - locY,
+					targetZ - locZ
 				).a();// .a() -> Normalize values
 				Vec3D vec3d1 = new Vec3D(
-						sin(toRadians(yaw)),
-						motY,
-						(-cos(toRadians(yaw)))
+					sin(toRadians(yaw)),
+					motY,
+					(-cos(toRadians(yaw)))
 				).a();// .a() -> Normalize values
 				float f4 = (float) (vec3d1.b(relativeTargetCoordinates) + 0.5D) / 1.5F;
 
@@ -370,29 +370,29 @@ public class Dergon extends EntityEnderDragon
 			//t_() means on update.
 			dergonBody.t_();
 			dergonBody.setPositionRotation(
-					locX + (double) (sinYaw * 0.5F),
-					locY,
-					locZ - (double) (cosYaw * 0.5F),
-					0.0F,
-					0.0F
+				locX + (double) (sinYaw * 0.5F),
+				locY,
+				locZ - (double) (cosYaw * 0.5F),
+				0.0F,
+				0.0F
 			);
 
 			dergonWingRight.t_();
 			dergonWingRight.setPositionRotation(
-					locX + (double) (cosYaw * 4.5F),
-					locY + 1.5D,
-					locZ + (double) (sinYaw * 4.5F),
-					0.0F,
-					0.0F
+				locX + (double) (cosYaw * 4.5F),
+				locY + 1.5D,
+				locZ + (double) (sinYaw * 4.5F),
+				0.0F,
+				0.0F
 			);
 
 			dergonWingLeft.t_();
 			dergonWingLeft.setPositionRotation(
-					locX - (double) (cosYaw * 4.5F),
-					locY + 1.5D,
-					locZ - (double) (sinYaw * 4.5F),
-					0.0F,
-					0.0F
+				locX - (double) (cosYaw * 4.5F),
+				locY + 1.5D,
+				locZ - (double) (sinYaw * 4.5F),
+				0.0F,
+				0.0F
 			);
 
 			if (!world.isClientSide && hurtTicks == 0)
@@ -411,11 +411,11 @@ public class Dergon extends EntityEnderDragon
 			// Make dergon's head hitbox point in the direction of motion.
 			dergonHead.t_();
 			dergonHead.setPositionRotation(
-					locX + (double) (xDirectionIncremented * 5.5F * cosF1),
-					locY + (currentPosition[1] - oldPosition[1]) + (double) (sinF1 * 5.5F),
-					locZ - (double) (zDirectionIncremented * 5.5F * cosF1),
-					0.0F,
-					0.0F
+				locX + (double) (xDirectionIncremented * 5.5F * cosF1),
+				locY + (currentPosition[1] - oldPosition[1]) + (double) (sinF1 * 5.5F),
+				locZ - (double) (zDirectionIncremented * 5.5F * cosF1),
+				0.0F,
+				0.0F
 			);
 
 			//Move the tail
@@ -439,11 +439,11 @@ public class Dergon extends EntityEnderDragon
 
 				tailSection.t_();
 				tailSection.setPositionRotation(
-						locX - (double) ((sinYaw * ONE_POINT_FIVE + sinF14 * movementMultiplier) * cosF1),
-						locY + (olderPosition[1] - oldPosition[1]) - (double) ((movementMultiplier + ONE_POINT_FIVE) * sinF1) + 1.5D,
-						locZ + (double) ((cosYaw * ONE_POINT_FIVE + cosF14 * movementMultiplier) * cosF1),
-						0.0F,
-						0.0F
+					locX - (double) ((sinYaw * ONE_POINT_FIVE + sinF14 * movementMultiplier) * cosF1),
+					locY + (olderPosition[1] - oldPosition[1]) - (double) ((movementMultiplier + ONE_POINT_FIVE) * sinF1) + 1.5D,
+					locZ + (double) ((cosYaw * ONE_POINT_FIVE + cosF14 * movementMultiplier) * cosF1),
+					0.0F,
+					0.0F
 				);
 			}
 		}
@@ -501,9 +501,10 @@ public class Dergon extends EntityEnderDragon
 				double zDistance = entity.locZ - bodyBoundingBoxValue1;
 				double distanceSquared = xDistance * xDistance + zDistance * zDistance;
 
-				entity.g(xDistance / distanceSquared * 4.0D,
-						0.20000000298023224D,
-						zDistance / distanceSquared * 4.0D
+				entity.g(
+					xDistance / distanceSquared * 4.0D,
+					0.20000000298023224D,
+					zDistance / distanceSquared * 4.0D
 				);
 			}
 		}
