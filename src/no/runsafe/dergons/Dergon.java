@@ -33,7 +33,6 @@ import static java.lang.Math.toRadians;
  * public int           bl       c        c         c           Ring buffer index for yaw/Y-position buffer.
  * public float         bu       bD       bE        bD          Previous animation time.
  * public float         bv       bE       bF        bE          Animation time.
- * public boolean       bx       bF       bG        bF          True when slowed.
  * public int           by       bG       bH        bG          Death Ticks.
  *
  * Entity.class:
@@ -222,7 +221,7 @@ public class Dergon extends EntityEnderDragon
 		{
 			float f = 0.2F / ((float) sqrt(motX * motX + motZ * motZ) * 10.0F + 1.0F);
 			f *= (float) pow(2.0D, motY);
-			bv += (bx ? f * 0.5F : f);
+			bv += f;
 
 			yaw = (float) trimDegrees(yaw);
 			if (bl < 0)
@@ -332,13 +331,7 @@ public class Dergon extends EntityEnderDragon
 				float f7 = 0.06F;
 
 				a(0.0F, -1.0F, f7 * (f4 * f6 + (1.0F - f6)));
-				if (bx)
-					move(motX * 0.800000011920929D,
-						motY * 0.800000011920929D,
-						motZ * 0.800000011920929D
-					);
-				else
-					move(motX, motY, motZ);
+				move(motX, motY, motZ);
 
 				Vec3D vec3d2 = new Vec3D(motX, motY, motZ).a();
 				float f8 = (float) (vec3d2.b(vec3d1) + 1.0D) / 2.0F;
