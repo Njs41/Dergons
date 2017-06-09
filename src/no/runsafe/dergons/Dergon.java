@@ -352,7 +352,7 @@ public class Dergon extends EntityEnderDragon
 			dergonTailSection2.width = dergonTailSection2.length = 2.0F;
 			dergonBody.length = 3.0F;
 			dergonBody.width = 5.0F;
-			dergonWingRight.length = 2.0F;
+			dergonWingRight.length = 3.0F;
 			dergonWingRight.width = 4.0F;
 			dergonWingLeft.length = 3.0F;
 			dergonWingLeft.width = 4.0F;
@@ -380,7 +380,7 @@ public class Dergon extends EntityEnderDragon
 			dergonWingRight.t_();
 			dergonWingRight.setPositionRotation(
 					locX + (double) (cosYaw * 4.5F),
-					locY + 2.0D,
+					locY + 1.5D,
 					locZ + (double) (sinYaw * 4.5F),
 					0.0F,
 					0.0F
@@ -389,7 +389,7 @@ public class Dergon extends EntityEnderDragon
 			dergonWingLeft.t_();
 			dergonWingLeft.setPositionRotation(
 					locX - (double) (cosYaw * 4.5F),
-					locY + 2.0D,
+					locY + 1.5D,
 					locZ - (double) (sinYaw * 4.5F),
 					0.0F,
 					0.0F
