@@ -11,11 +11,9 @@ import no.runsafe.framework.minecraft.entity.RunsafeFallingBlock;
 import org.bukkit.GameMode;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import static java.lang.Math.PI;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.pow;
