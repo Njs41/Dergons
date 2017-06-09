@@ -205,7 +205,7 @@ public class Dergon extends EntityEnderDragon
 		}
 
 		float f = 0.2F / ((float) sqrt(motX * motX + motZ * motZ) * 10.0F + 1.0F);
-		f *= (float) pow(2.0D, motY);
+		f *= pow(2.0D, motY);
 		bv += f;
 
 		yaw = (float) trimDegrees(yaw);
@@ -214,7 +214,7 @@ public class Dergon extends EntityEnderDragon
 		if (++positionBufferIndex == positionBuffer.length)
 			positionBufferIndex = 0;
 
-		positionBuffer[positionBufferIndex][0] = (double) yaw;
+		positionBuffer[positionBufferIndex][0] = yaw;
 		positionBuffer[positionBufferIndex][1] = locY;
 
 		//Get target position relative to Dergon
@@ -247,16 +247,16 @@ public class Dergon extends EntityEnderDragon
 
 		targetPosY /= sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ);
 		final float Y_LIMIT = 0.6F;
-		if (targetPosY < (double) (-Y_LIMIT))
-			targetPosY = (double) (-Y_LIMIT);
+		if (targetPosY < (-Y_LIMIT))
+			targetPosY = (-Y_LIMIT);
 
-		if (targetPosY > (double) Y_LIMIT)
-			targetPosY = (double) Y_LIMIT;
+		if (targetPosY > Y_LIMIT)
+			targetPosY = Y_LIMIT;
 
 		motY += targetPosY * 0.10000000149011612D;
 		yaw = (float) trimDegrees(yaw);
 		double targetDirection = 180.0D - toDegrees(atan2(targetPosX, targetPosZ));
-		double targetHeadingDifference = trimDegrees(targetDirection - (double) yaw);
+		double targetHeadingDifference = trimDegrees(targetDirection - yaw);
 
 		if (targetHeadingDifference > 50.0D)
 			targetHeadingDifference = 50.0D;
@@ -286,7 +286,7 @@ public class Dergon extends EntityEnderDragon
 		if (movementScalarTrimmed > 40.0D)
 			movementScalarTrimmed = 40.0D;
 
-		bb = (float) ((double) bb + targetHeadingDifference * (0.699999988079071D / movementScalarTrimmed / movementScalarStart));
+		bb = (float) (bb + targetHeadingDifference * (0.699999988079071D / movementScalarTrimmed / movementScalarStart));
 		yaw += bb * 0.1F;
 		float f6 = (float) (2.0D / (movementScalarTrimmed + 1.0D));
 		float dampenerValue = 0.06F;
@@ -298,8 +298,8 @@ public class Dergon extends EntityEnderDragon
 		float f8 = (float) (movementVector.b(vec3d1) + 1.0D) / 2.0F;
 
 		f8 = 0.8F + 0.15F * f8;
-		motX *= (double) f8;
-		motZ *= (double) f8;
+		motX *= f8;
+		motZ *= f8;
 		motY *= 0.9100000262260437D;
 
 		aJ = yaw;
