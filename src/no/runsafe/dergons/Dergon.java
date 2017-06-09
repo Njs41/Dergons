@@ -250,7 +250,7 @@ public class Dergon extends EntityEnderDragon
 		motZ *= f8;
 		motY *= 0.9100000262260437D;
 
-		aJ = yaw;
+		aI = yaw;
 		dergonHead.width = dergonHead.length = 3.0F;
 		dergonTailSection0.width = dergonTailSection0.length = 2.0F;
 		dergonTailSection1.width = dergonTailSection1.length = 2.0F;
