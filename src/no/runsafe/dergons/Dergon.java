@@ -58,44 +58,6 @@ public class Dergon extends EntityEnderDragon
 	}
 
 	/**
-	 * Target coordinates to fly to.
-	 */
-	private double targetX = 0;
-	private double targetY = 100;
-	private double targetZ = 0;
-
-	// Forces selection of a new flight target when true.
-	private boolean changeTarget = false;
-
-	private int deathTicks = 0;
-
-	// Store the dergon's last 64 vertical and yaw positions.
-	private double[][] positionBuffer = new double[64][2];
-	private int positionBufferIndex = -1;
-
-	/*
-	 * Dergon bodily appendages.
-	 * Only their hitboxes.
-	 * Names in various spigot versions:
-	 * v1_8_R3    v1_9_R2    v1_10_R1    v1_11_R1
-	 * bn         bv         bw          bv        Head
-	 * bo         bx         by          bx        Body
-	 * bs         bB         bC          bB        Right Wing
-	 * bt         bC         bD          bC        Left Wing
-	 * bp         by         bz          by        Tail section closest to body
-	 * bq         bz         bA          bz        Middle tail section
-	 * br         bA         bB          bA        Last tail section
-	 * N/A        bw         bx          bw        Neck (Only in 1.9+)
-	 */
-	private EntityComplexPart dergonHead = bn;
-	private EntityComplexPart dergonBody = bo;
-	private EntityComplexPart dergonWingRight = bs;
-	private EntityComplexPart dergonWingLeft = bt;
-	private EntityComplexPart dergonTailSection0 = bp;
-	private EntityComplexPart dergonTailSection1 = bq;
-	private EntityComplexPart dergonTailSection2 = br;
-
-	/**
 	 * Selects new player target.
 	 */
 	private void updateCurrentTarget()
@@ -618,6 +580,41 @@ public class Dergon extends EntityEnderDragon
 		return dergonID;
 	}
 
+	/*
+	 * Dergon bodily appendages.
+	 * Only their hitboxes.
+	 * Names in various spigot versions:
+	 * v1_8_R3    v1_9_R2    v1_10_R1    v1_11_R1
+	 * bn         bv         bw          bv        Head
+	 * bo         bx         by          bx        Body
+	 * bs         bB         bC          bB        Right Wing
+	 * bt         bC         bD          bC        Left Wing
+	 * bp         by         bz          by        Tail section closest to body
+	 * bq         bz         bA          bz        Middle tail section
+	 * br         bA         bB          bA        Last tail section
+	 * N/A        bw         bx          bw        Neck (Only in 1.9+)
+	 */
+	private EntityComplexPart dergonHead = bn;
+	private EntityComplexPart dergonBody = bo;
+	private EntityComplexPart dergonWingRight = bs;
+	private EntityComplexPart dergonWingLeft = bt;
+	private EntityComplexPart dergonTailSection0 = bp;
+	private EntityComplexPart dergonTailSection1 = bq;
+	private EntityComplexPart dergonTailSection2 = br;
+
+	// Target coordinates to fly to.
+	private double targetX = 0;
+	private double targetY = 100;
+	private double targetZ = 0;
+
+	// Store the dergon's last 64 vertical and yaw positions.
+	private double[][] positionBuffer = new double[64][2];
+	private int positionBufferIndex = -1;
+
+	// Forces selection of a new flight target when true.
+	private boolean changeTarget = false;
+
+	private int deathTicks = 0;
 	private Entity targetEntity;
 	private final DergonHandler handler;
 	private final ILocation targetLocation;
