@@ -343,7 +343,7 @@ public class Dergon extends EntityEnderDragon
 			hitEntities(world.getEntities(this, dergonHead.getBoundingBox().grow(1.0D, 1.0D, 1.0D)));
 		}
 
-		double[] oldPosition = getMovementOffset(5);
+		double[] olderPosition = getMovementOffset(5);
 		double[] currentPosition = getMovementOffset(0);
 
 		float xDirectionIncremented = (float) sin(toRadians(yaw) - bc * 0.01F);
@@ -353,7 +353,7 @@ public class Dergon extends EntityEnderDragon
 		incrementLocation(
 			dergonHead,
 			(xDirectionIncremented * 5.5F * cosF1),
-			((currentPosition[1] - oldPosition[1]) + (sinF1 * 5.5F)),
+			((currentPosition[1] - olderPosition[1]) + (sinF1 * 5.5F)),
 			-(zDirectionIncremented * 5.5F * cosF1)
 		);
 
@@ -369,8 +369,8 @@ public class Dergon extends EntityEnderDragon
 				case 2: tailSection = dergonTailSection2; break;
 			}
 
-			double[] olderPosition = getMovementOffset(12 + tailNumber * 2);
-			float f14 = (float) toRadians(yaw + trimDegrees(olderPosition[0] - oldPosition[0]));
+			double[] oldPosition = getMovementOffset(12 + tailNumber * 2);
+			float f14 = (float) toRadians(yaw + trimDegrees(oldPosition[0] - olderPosition[0]));
 			float sinF14 = (float) sin(f14);
 			float cosF14 = (float) cos(f14);
 			final float ONE_POINT_FIVE = 1.5F;
@@ -379,7 +379,7 @@ public class Dergon extends EntityEnderDragon
 			incrementLocation(
 				tailSection,
 				-((sinYaw * ONE_POINT_FIVE + sinF14 * movementMultiplier) * cosF1),
-				((olderPosition[1] - oldPosition[1]) - ((movementMultiplier + ONE_POINT_FIVE) * sinF1) + 1.5),
+				((oldPosition[1] - olderPosition[1]) - ((movementMultiplier + ONE_POINT_FIVE) * sinF1) + 1.5),
 				((cosYaw * ONE_POINT_FIVE + cosF14 * movementMultiplier) * cosF1)
 			);
 		}
