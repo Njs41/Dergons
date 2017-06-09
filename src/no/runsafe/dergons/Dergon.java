@@ -19,27 +19,28 @@ import java.util.Random;
  * Names of obfuscated variables in various spigot versions:
  *
  * Variables in EntityEnderDragon:
- * Type			v1_7_R3		v1_8_R3		v1_9_R2
- * public double[][]		bn			bk			b		Buffer array for the last 64 Y-positions and yaw rotations.
- * public int			bo			bl			c		Ring buffer index
- * public float		bx			bu			bD		Previous animation time.
- * public float		by			bv			bE		Animation time.
- * public boolean		bz			bw			?		Currently has a selected target?
- * public boolean		bA			bx			bF
- * public int			bB			by			bG		Death Ticks
+ * Type                 v1_8_R3  v1_9_R2  v1_10_R1  v1_11_R1
+ * public double[][]    bk       b        b         b           Buffer array for the last 64 Y-positions and yaw rotations.
+ * public int           bl       c        c         c           Ring buffer index for yaw/Y-position buffer.
+ * public float         bu       bD       bE        bD          Previous animation time.
+ * public float         bv       bE       bF        bE          Animation time.
+ * public boolean       bw       Removed  N/A       N/A         Forces selection of a new flight target when true.
+ * public boolean       bx       bF       bG        bF          True when slowed.
+ * public int           by       bG       bH        bG          Death Ticks.
  *
  * Entity.class:
- * public boolean		G			F			C
+ * public boolean       F        C        C         C           Checks if entity is collided with a vertical block.
  *
  * EntityLiving.Class:
- * protected int		bg			bc			bh		Position rotation increment
- * protected double		bh			bd			bi		X position entity will be set to.
- * protected double		bi			be			bj		Y position entity will be set to.
- * protected double		bj			bf			bk		Z position entity will be set to.
- * protected double		bk			bg			bl		Yaw position entity will be set to.
- * protected double		bl			bh			bm		Pitch position entity will be set to.
- * public float		aN			aJ			aO		Might have something to do with yaw?
- * protected float		bf			bb			Either be, bf, or bg.
+ * protected int        bc       bh       bi        bh          Position rotation increment
+ * protected double     bd       bi       bj        bi          X position entity will be set to.
+ * protected double     be       bj       bk        bj          Y position entity will be set to.
+ * protected double     bf       bk       bl        bk          Z position entity will be set to.
+ * protected double     bg       bl       bm        bl          Yaw position entity will be set to.
+ * protected double     bh       bm       bn        bm          Pitch position entity will be set to.
+ * public float         aI       aN       aO        aN          Might have something to do with the yaw offset?
+ * public float         aJ       aO       aP        aO          Definitely has something to do with the yaw offset.
+ * protected float      bb       bg       bh        bg          Random Yaw Velocity
  */
 
 public class Dergon extends EntityEnderDragon
@@ -64,15 +65,15 @@ public class Dergon extends EntityEnderDragon
 	 * Dergon bodily appendages.
 	 * Only their hitboxes.
 	 * Names in various spigot versions:
-	 * v1_7_R3		v1_8_R3		v1_9_R2
-	 * bq			bn			bv		Head
-	 * br			bo			bx		Body
-	 * bv			bs			bB		Wing
-	 * bw			bt			bC		Wing
-	 * bs			bp			by		Tail section closest to body
-	 * bt			bq			bz		Middle tail section
-	 * bu			br			bA		Last tail section
-	 * N/A			N/A			bw		Neck (Only in 1.9+)
+	 * v1_8_R3    v1_9_R2    v1_10_R1    v1_11_R1
+	 * bn         bv         bw          bv        Head
+	 * bo         bx         by          bx        Body
+	 * bs         bB         bC          bB        Wing
+	 * bt         bC         bD          bC        Wing
+	 * bp         by         bz          by        Tail section closest to body
+	 * bq         bz         bA          bz        Middle tail section
+	 * br         bA         bB          bA        Last tail section
+	 * N/A        bw         bx          bw        Neck (Only in 1.9+)
 	 */
 	private EntityComplexPart dergonHead = bn;
 	private EntityComplexPart dergonBody = bo;
@@ -161,9 +162,8 @@ public class Dergon extends EntityEnderDragon
 	/**
 	 * Update method for Dergons.
 	 * Names of this function in various spigot versions:
-	 * v1_7_R3: e
 	 * v1_8_R3: m
-	 * v1_9_R2: n
+	 * v1_9_R2/v1_10_R1/v1_11_R1: n
 	 */
 	@Override
 	public void m()
@@ -349,7 +349,7 @@ public class Dergon extends EntityEnderDragon
 			dergonWing0.width = 4.0F;
 			dergonWing1.length = 3.0F;
 			dergonWing1.width = 4.0F;
-			//b(int, float) gets movement offsets.
+
 			float f1 = (float) (
 				getMovementOffset(5, 1.0F)[1]
 				- getMovementOffset(10, 1.0F)[1]
@@ -448,7 +448,7 @@ public class Dergon extends EntityEnderDragon
 	 * Damages the dergon based on a specific body part.
 	 * Also recalculates the dergon's target location.
 	 * Names of this function in various spigot versions:
-	 * v1_8_R3: a
+	 * v1_8_R3/v1_9_R2/v1_10_R1/v1_11_R1: a
 	 * @param bodyPart Part of the dergon hit.
 	 * @param damager Source of the damage.
 	 * @param damageValue Amount of damage.
@@ -576,9 +576,8 @@ public class Dergon extends EntityEnderDragon
 	 * Damage the dergon.
 	 * Overrides method in EntityLiving.class
 	 * Names of this function in various spigot versions:
-	 * v1_7_R3: d, returns void
-	 * v1_8_R3: d, returns boolean and is in EntityLiving
-	 * v1_9_R2: damageEntity0
+	 * v1_8_R3: d
+	 * v1_9_R2/v1_10_R1/v1_11_R1: damageEntity0
 	 * @param source damage source
 	 * @param f Damage amount
 	 * @return True if damaged, false if not damaged.
@@ -593,10 +592,13 @@ public class Dergon extends EntityEnderDragon
 	}
 
 	/**
-	 * Handle dergon death.
+	 * Handles dergon death ticks.
+	 * Overrides method in EntityEnderDragon which overrides method in EntityLiving
 	 * Names of this function in various spigot versions:
-	 * v1_7_R3: aE
 	 * v1_8_R3: aZ
+	 * v1_9_R2: bD
+	 * v_10_R1: bF
+	 * v_11_R1: bG
 	 */
 	@Override
 	protected void aZ()
