@@ -143,7 +143,6 @@ public class Dergon extends EntityEnderDragon
 			ridingPlayer = null;
 		}
 
-
 		// Update the health bar to show the percentage of the dergon
 		long pct = Math.round((getHealth() / getMaxHealth()) * 100);
 		setCustomName("Dergon (" + pct + "%)");
@@ -167,7 +166,7 @@ public class Dergon extends EntityEnderDragon
 		positionBuffer[positionBufferIndex][0] = yaw;
 		positionBuffer[positionBufferIndex][1] = locY;
 
-		//Get target position relative to Dergon
+		// Get target position relative to Dergon
 		double targetPosX = targetX - locX;
 		double targetPosY = targetY - locY;
 		double targetPosZ = targetZ - locZ;
@@ -218,18 +217,18 @@ public class Dergon extends EntityEnderDragon
 			targetX - locX,
 			targetY - locY,
 			targetZ - locZ
-		).a();// .a() -> Normalize values
+		).a(); // .a() -> Normalize values
 		Vec3D vec3d1 = new Vec3D(
 			sin(toRadians(yaw)),
 			motY,
 			(-cos(toRadians(yaw)))
-		).a();// .a() -> Normalize values
+		).a(); // .a() -> Normalize values
 		float f4 = (float) (vec3d1.b(relativeTargetCoordinates) + 0.5D) / 1.5F;
 
 		if (f4 < 0.0F)
 			f4 = 0.0F;
 
-		bb *= 0.8F;  // Dampen the random yaw velocity.
+		bb *= 0.8F; // Dampen the random yaw velocity.
 		double movementScalarTrimmed = sqrt(motX * motX + motZ * motZ) + 1;
 		float movementScalarStart = (float) movementScalarTrimmed;
 
@@ -431,9 +430,9 @@ public class Dergon extends EntityEnderDragon
 	{
 		int j = positionBufferIndex - bufferIndexOffset & 63;
 		double[] movementOffset = new double[2];
-		//Set yaw offset
+		// Set yaw offset
 		movementOffset[0] = positionBuffer[j][0];
-		//set y offset.
+		// Set y offset.
 		movementOffset[1] = positionBuffer[j][1];
 
 		return movementOffset;
@@ -475,11 +474,12 @@ public class Dergon extends EntityEnderDragon
 
 		// Increment death ticks.
 		deathTicks++;
+
 		// Make explosion particles when the dergon is almost dead.
 		if (deathTicks >= 180 && deathTicks <= 200)
 			randomExplosion();
 
-		//Play dragon death sound as dergon death animation starts.
+		// Play dragon death sound as dergon death animation starts.
 		if (deathTicks == 1)
 			getLocation().playSound(
 				Sound.Creature.EnderDragon.Death, 32.0F, 1.0F
@@ -553,9 +553,9 @@ public class Dergon extends EntityEnderDragon
 	private boolean isValidTarget(IPlayer player)
 	{
 		return !player.isVanished()
-				&& !player.isDead()
-				&& player.getGameMode() != GameMode.CREATIVE
-				&& player.getGameMode() != GameMode.SPECTATOR;
+			&& !player.isDead()
+			&& player.getGameMode() != GameMode.CREATIVE
+			&& player.getGameMode() != GameMode.SPECTATOR;
 	}
 
 	private boolean isRidingPlayer(String playerName)
