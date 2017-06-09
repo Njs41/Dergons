@@ -198,217 +198,218 @@ public class Dergon extends EntityEnderDragon
 		bu = bv; // Update previous animation time.
 
 		if (getHealth() <= 0.0F) // Check if the dragon is dead.
+		{
 			randomExplosion(); // If we're dead, play a random explosion effect at a random offset to it's corpse.
+			return;
+		}
+
+		float f = 0.2F / ((float) sqrt(motX * motX + motZ * motZ) * 10.0F + 1.0F);
+		f *= (float) pow(2.0D, motY);
+		bv += f;
+
+		yaw = (float) trimDegrees(yaw);
+		// If the dergon was just created load up the buffer with current values.
+		if (bl < 0)
+		{
+			for (int i = 0; i < bk.length; ++i)
+			{
+				bk[i][0] = (double) yaw;
+				bk[i][1] = locY;
+			}
+		}
+
+		// Increment the buffer index.
+		if (++bl == bk.length)
+			bl = 0;
+
+		bk[bl][0] = (double) yaw;
+		bk[bl][1] = locY;
+
+		//Get target position relative to Dergon
+		double targetPosX = targetX - locX;
+		double targetPosY = targetY - locY;
+		double targetPosZ = targetZ - locZ;
+		double targetDistance = targetPosX * targetPosX + targetPosY * targetPosY + targetPosZ * targetPosZ;
+		if (targetEntity != null)
+		{
+			targetX = targetEntity.locX;
+			targetZ = targetEntity.locZ;
+			double xDistanceToTarget = targetX - locX;
+			double yDistanceToTarget = targetZ - locZ;
+			double distanceToTarget = sqrt(xDistanceToTarget * xDistanceToTarget + yDistanceToTarget * yDistanceToTarget);
+			double ascendDistance = 0.4000000059604645D + distanceToTarget / 80.0D - 1.0D;
+
+			if (ascendDistance > 10.0D)
+				ascendDistance = 10.0D;
+
+			targetY = targetEntity.getBoundingBox().b + ascendDistance;
+		}
 		else
 		{
-			float f = 0.2F / ((float) sqrt(motX * motX + motZ * motZ) * 10.0F + 1.0F);
-			f *= (float) pow(2.0D, motY);
-			bv += f;
+			targetX += random.nextGaussian() * 2.0D;
+			targetZ += random.nextGaussian() * 2.0D;
+		}
 
-			yaw = (float) trimDegrees(yaw);
-			// If the dergon was just created load up the buffer with current values.
-			if (bl < 0)
+		if (changeTarget || targetDistance < 100.0D || targetDistance > 22500.0D || positionChanged || F)
+			updateCurrentTarget();
+
+		targetPosY /= sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ);
+		final float Y_LIMIT = 0.6F;
+		if (targetPosY < (double) (-Y_LIMIT))
+			targetPosY = (double) (-Y_LIMIT);
+
+		if (targetPosY > (double) Y_LIMIT)
+			targetPosY = (double) Y_LIMIT;
+
+		motY += targetPosY * 0.10000000149011612D;
+		yaw = (float) trimDegrees(yaw);
+		double targetDirection = 180.0D - toDegrees(atan2(targetPosX, targetPosZ));
+		double targetHeadingDifference = trimDegrees(targetDirection - (double) yaw);
+
+		if (targetHeadingDifference > 50.0D)
+			targetHeadingDifference = 50.0D;
+
+		if (targetHeadingDifference < -50.0D)
+			targetHeadingDifference = -50.0D;
+
+		Vec3D relativeTargetCoordinates = new Vec3D(
+			targetX - locX,
+			targetY - locY,
+			targetZ - locZ
+		).a();// .a() -> Normalize values
+		Vec3D vec3d1 = new Vec3D(
+			sin(toRadians(yaw)),
+			motY,
+			(-cos(toRadians(yaw)))
+		).a();// .a() -> Normalize values
+		float f4 = (float) (vec3d1.b(relativeTargetCoordinates) + 0.5D) / 1.5F;
+
+		if (f4 < 0.0F)
+			f4 = 0.0F;
+
+		bb *= 0.8F;  // Dampen the random yaw velocity.
+		double movementScalarTrimmed = sqrt(motX * motX + motZ * motZ) + 1;
+		float movementScalarStart = (float) movementScalarTrimmed;
+
+		if (movementScalarTrimmed > 40.0D)
+			movementScalarTrimmed = 40.0D;
+
+		bb = (float) ((double) bb + targetHeadingDifference * (0.699999988079071D / movementScalarTrimmed / movementScalarStart));
+		yaw += bb * 0.1F;
+		float f6 = (float) (2.0D / (movementScalarTrimmed + 1.0D));
+		float dampenerValue = 0.06F;
+
+		a(0.0F, -1.0F, dampenerValue * (f4 * f6 + (1.0F - f6)));
+		move(motX, motY, motZ);
+
+		Vec3D movementVector = new Vec3D(motX, motY, motZ).a();
+		float f8 = (float) (movementVector.b(vec3d1) + 1.0D) / 2.0F;
+
+		f8 = 0.8F + 0.15F * f8;
+		motX *= (double) f8;
+		motZ *= (double) f8;
+		motY *= 0.9100000262260437D;
+
+		aJ = yaw;
+		dergonHead.width = dergonHead.length = 3.0F;
+		dergonTailSection0.width = dergonTailSection0.length = 2.0F;
+		dergonTailSection1.width = dergonTailSection1.length = 2.0F;
+		dergonTailSection2.width = dergonTailSection2.length = 2.0F;
+		dergonBody.length = 3.0F;
+		dergonBody.width = 5.0F;
+		dergonWingRight.length = 3.0F;
+		dergonWingRight.width = 4.0F;
+		dergonWingLeft.length = 3.0F;
+		dergonWingLeft.width = 4.0F;
+
+		float f1 = (float) toRadians((
+			getMovementOffset(5, 1.0F)[1]
+			- getMovementOffset(10, 1.0F)[1]
+		) * 10.0F);
+		float cosF1 = (float) cos(f1);
+		float sinF1 = (float) -sin(f1);
+		float yawRad = (float) toRadians(yaw);
+		float sinYaw = (float) sin(yawRad);
+		float cosYaw = (float) cos(yawRad);
+
+		//t_() means on update.
+		dergonBody.t_();
+		dergonBody.setPositionRotation(
+			locX + (double) (sinYaw * 0.5F),
+			locY,
+			locZ - (double) (cosYaw * 0.5F),
+			0.0F,
+			0.0F
+		);
+
+		dergonWingRight.t_();
+		dergonWingRight.setPositionRotation(
+			locX + (double) (cosYaw * 4.5F),
+			locY + 1.5D,
+			locZ + (double) (sinYaw * 4.5F),
+			0.0F,
+			0.0F
+		);
+
+		dergonWingLeft.t_();
+		dergonWingLeft.setPositionRotation(
+			locX - (double) (cosYaw * 4.5F),
+			locY + 1.5D,
+			locZ - (double) (sinYaw * 4.5F),
+			0.0F,
+			0.0F
+		);
+
+		if (hurtTicks == 0)
+		{
+			launchEntities(world.getEntities(this, dergonWingRight.getBoundingBox().grow(4.0D, 2.0D, 4.0D).shrink(0.0D, -2.0D, 0.0D)));
+			launchEntities(world.getEntities(this, dergonWingLeft.getBoundingBox().grow(4.0D, 2.0D, 4.0D).shrink(0.0D, -2.0D, 0.0D)));
+			hitEntities(world.getEntities(this, dergonHead.getBoundingBox().grow(1.0D, 1.0D, 1.0D)));
+		}
+
+		double[] oldPosition = getMovementOffset(5, 1.0F);
+		double[] currentPosition = getMovementOffset(0, 1.0F);
+
+		float xDirectionIncremented = (float) sin(toRadians(yaw) - bc * 0.01F);
+		float zDirectionIncremented = (float) cos(toRadians(yaw) - bc * 0.01F);
+
+		// Make dergon's head hitbox point in the direction of motion.
+		dergonHead.t_();
+		dergonHead.setPositionRotation(
+			locX + (double) (xDirectionIncremented * 5.5F * cosF1),
+			locY + (currentPosition[1] - oldPosition[1]) + (double) (sinF1 * 5.5F),
+			locZ - (double) (zDirectionIncremented * 5.5F * cosF1),
+			0.0F,
+			0.0F
+		);
+
+		//Move the tail
+		for (int tailNumber = 0; tailNumber < 3; ++tailNumber)
+		{
+			EntityComplexPart tailSection = null;
+
+			switch (tailNumber)
 			{
-				for (int i = 0; i < bk.length; ++i)
-				{
-					bk[i][0] = (double) yaw;
-					bk[i][1] = locY;
-				}
+				case 0: tailSection = dergonTailSection0; break;
+				case 1: tailSection = dergonTailSection1; break;
+				case 2: tailSection = dergonTailSection2; break;
 			}
 
-			// Increment the buffer index.
-			if (++bl == bk.length)
-				bl = 0;
+			double[] olderPosition = getMovementOffset(12 + tailNumber * 2, 1.0F);
+			float f14 = (float) toRadians(yaw + trimDegrees(olderPosition[0] - oldPosition[0]));
+			float sinF14 = (float) sin(f14);
+			float cosF14 = (float) cos(f14);
+			final float ONE_POINT_FIVE = 1.5F;
+			float movementMultiplier = (tailNumber + 1) * 2.0F; // 2, 4, 6
 
-			bk[bl][0] = (double) yaw;
-			bk[bl][1] = locY;
-
-			//Get target position relative to Dergon
-			double targetPosX = targetX - locX;
-			double targetPosY = targetY - locY;
-			double targetPosZ = targetZ - locZ;
-			double targetDistance = targetPosX * targetPosX + targetPosY * targetPosY + targetPosZ * targetPosZ;
-			if (targetEntity != null)
-			{
-				targetX = targetEntity.locX;
-				targetZ = targetEntity.locZ;
-				double xDistanceToTarget = targetX - locX;
-				double yDistanceToTarget = targetZ - locZ;
-				double distanceToTarget = sqrt(xDistanceToTarget * xDistanceToTarget + yDistanceToTarget * yDistanceToTarget);
-				double ascendDistance = 0.4000000059604645D + distanceToTarget / 80.0D - 1.0D;
-
-				if (ascendDistance > 10.0D)
-					ascendDistance = 10.0D;
-
-				targetY = targetEntity.getBoundingBox().b + ascendDistance;
-			}
-			else
-			{
-				targetX += random.nextGaussian() * 2.0D;
-				targetZ += random.nextGaussian() * 2.0D;
-			}
-
-			if (changeTarget || targetDistance < 100.0D || targetDistance > 22500.0D || positionChanged || F)
-				updateCurrentTarget();
-
-			targetPosY /= sqrt(targetPosX * targetPosX + targetPosZ * targetPosZ);
-			final float Y_LIMIT = 0.6F;
-			if (targetPosY < (double) (-Y_LIMIT))
-				targetPosY = (double) (-Y_LIMIT);
-
-			if (targetPosY > (double) Y_LIMIT)
-				targetPosY = (double) Y_LIMIT;
-
-			motY += targetPosY * 0.10000000149011612D;
-			yaw = (float) trimDegrees(yaw);
-			double targetDirection = 180.0D - toDegrees(atan2(targetPosX, targetPosZ));
-			double targetHeadingDifference = trimDegrees(targetDirection - (double) yaw);
-
-			if (targetHeadingDifference > 50.0D)
-				targetHeadingDifference = 50.0D;
-
-			if (targetHeadingDifference < -50.0D)
-				targetHeadingDifference = -50.0D;
-
-			Vec3D relativeTargetCoordinates = new Vec3D(
-				targetX - locX,
-				targetY - locY,
-				targetZ - locZ
-			).a();// .a() -> Normalize values
-			Vec3D vec3d1 = new Vec3D(
-				sin(toRadians(yaw)),
-				motY,
-				(-cos(toRadians(yaw)))
-			).a();// .a() -> Normalize values
-			float f4 = (float) (vec3d1.b(relativeTargetCoordinates) + 0.5D) / 1.5F;
-
-			if (f4 < 0.0F)
-				f4 = 0.0F;
-
-			bb *= 0.8F;  // Dampen the random yaw velocity.
-			double movementScalarTrimmed = sqrt(motX * motX + motZ * motZ) + 1;
-			float movementScalarStart = (float) movementScalarTrimmed;
-
-			if (movementScalarTrimmed > 40.0D)
-				movementScalarTrimmed = 40.0D;
-
-			bb = (float) ((double) bb + targetHeadingDifference * (0.699999988079071D / movementScalarTrimmed / movementScalarStart));
-			yaw += bb * 0.1F;
-			float f6 = (float) (2.0D / (movementScalarTrimmed + 1.0D));
-			float dampenerValue = 0.06F;
-
-			a(0.0F, -1.0F, dampenerValue * (f4 * f6 + (1.0F - f6)));
-			move(motX, motY, motZ);
-
-			Vec3D movementVector = new Vec3D(motX, motY, motZ).a();
-			float f8 = (float) (movementVector.b(vec3d1) + 1.0D) / 2.0F;
-
-			f8 = 0.8F + 0.15F * f8;
-			motX *= (double) f8;
-			motZ *= (double) f8;
-			motY *= 0.9100000262260437D;
-
-			aJ = yaw;
-			dergonHead.width = dergonHead.length = 3.0F;
-			dergonTailSection0.width = dergonTailSection0.length = 2.0F;
-			dergonTailSection1.width = dergonTailSection1.length = 2.0F;
-			dergonTailSection2.width = dergonTailSection2.length = 2.0F;
-			dergonBody.length = 3.0F;
-			dergonBody.width = 5.0F;
-			dergonWingRight.length = 3.0F;
-			dergonWingRight.width = 4.0F;
-			dergonWingLeft.length = 3.0F;
-			dergonWingLeft.width = 4.0F;
-
-			float f1 = (float) toRadians((
-				getMovementOffset(5, 1.0F)[1]
-				- getMovementOffset(10, 1.0F)[1]
-			) * 10.0F);
-			float cosF1 = (float) cos(f1);
-			float sinF1 = (float) -sin(f1);
-			float yawRad = (float) toRadians(yaw);
-			float sinYaw = (float) sin(yawRad);
-			float cosYaw = (float) cos(yawRad);
-
-			//t_() means on update.
-			dergonBody.t_();
-			dergonBody.setPositionRotation(
-				locX + (double) (sinYaw * 0.5F),
-				locY,
-				locZ - (double) (cosYaw * 0.5F),
+			tailSection.t_();
+			tailSection.setPositionRotation(
+				locX - (double) ((sinYaw * ONE_POINT_FIVE + sinF14 * movementMultiplier) * cosF1),
+				locY + (olderPosition[1] - oldPosition[1]) - (double) ((movementMultiplier + ONE_POINT_FIVE) * sinF1) + 1.5D,
+				locZ + (double) ((cosYaw * ONE_POINT_FIVE + cosF14 * movementMultiplier) * cosF1),
 				0.0F,
 				0.0F
 			);
-
-			dergonWingRight.t_();
-			dergonWingRight.setPositionRotation(
-				locX + (double) (cosYaw * 4.5F),
-				locY + 1.5D,
-				locZ + (double) (sinYaw * 4.5F),
-				0.0F,
-				0.0F
-			);
-
-			dergonWingLeft.t_();
-			dergonWingLeft.setPositionRotation(
-				locX - (double) (cosYaw * 4.5F),
-				locY + 1.5D,
-				locZ - (double) (sinYaw * 4.5F),
-				0.0F,
-				0.0F
-			);
-
-			if (hurtTicks == 0)
-			{
-				launchEntities(world.getEntities(this, dergonWingRight.getBoundingBox().grow(4.0D, 2.0D, 4.0D).shrink(0.0D, -2.0D, 0.0D)));
-				launchEntities(world.getEntities(this, dergonWingLeft.getBoundingBox().grow(4.0D, 2.0D, 4.0D).shrink(0.0D, -2.0D, 0.0D)));
-				hitEntities(world.getEntities(this, dergonHead.getBoundingBox().grow(1.0D, 1.0D, 1.0D)));
-			}
-
-			double[] oldPosition = getMovementOffset(5, 1.0F);
-			double[] currentPosition = getMovementOffset(0, 1.0F);
-
-			float xDirectionIncremented = (float) sin(toRadians(yaw) - bc * 0.01F);
-			float zDirectionIncremented = (float) cos(toRadians(yaw) - bc * 0.01F);
-
-			// Make dergon's head hitbox point in the direction of motion.
-			dergonHead.t_();
-			dergonHead.setPositionRotation(
-				locX + (double) (xDirectionIncremented * 5.5F * cosF1),
-				locY + (currentPosition[1] - oldPosition[1]) + (double) (sinF1 * 5.5F),
-				locZ - (double) (zDirectionIncremented * 5.5F * cosF1),
-				0.0F,
-				0.0F
-			);
-
-			//Move the tail
-			for (int tailNumber = 0; tailNumber < 3; ++tailNumber)
-			{
-				EntityComplexPart tailSection = null;
-
-				switch (tailNumber)
-				{
-					case 0: tailSection = dergonTailSection0; break;
-					case 1: tailSection = dergonTailSection1; break;
-					case 2: tailSection = dergonTailSection2; break;
-				}
-
-				double[] olderPosition = getMovementOffset(12 + tailNumber * 2, 1.0F);
-				float f14 = (float) toRadians(yaw + trimDegrees(olderPosition[0] - oldPosition[0]));
-				float sinF14 = (float) sin(f14);
-				float cosF14 = (float) cos(f14);
-				final float ONE_POINT_FIVE = 1.5F;
-				float movementMultiplier = (tailNumber + 1) * 2.0F; // 2, 4, 6
-
-				tailSection.t_();
-				tailSection.setPositionRotation(
-					locX - (double) ((sinYaw * ONE_POINT_FIVE + sinF14 * movementMultiplier) * cosF1),
-					locY + (olderPosition[1] - oldPosition[1]) - (double) ((movementMultiplier + ONE_POINT_FIVE) * sinF1) + 1.5D,
-					locZ + (double) ((cosYaw * ONE_POINT_FIVE + cosF14 * movementMultiplier) * cosF1),
-					0.0F,
-					0.0F
-				);
-			}
 		}
 	}
 
@@ -458,18 +459,18 @@ public class Dergon extends EntityEnderDragon
 		for (Object rawEntity : list)
 		{
 			Entity entity = (Entity) rawEntity;
-			if (entity instanceof EntityLiving)
-			{
-				double xDistance = entity.locX - bodyBoundingBoxValue0;
-				double zDistance = entity.locZ - bodyBoundingBoxValue1;
-				double distanceSquared = xDistance * xDistance + zDistance * zDistance;
+			if (!(entity instanceof EntityLiving))
+				continue;
 
-				entity.g(
-					xDistance / distanceSquared * 4.0D,
-					0.20000000298023224D,
-					zDistance / distanceSquared * 4.0D
-				);
-			}
+			double xDistance = entity.locX - bodyBoundingBoxValue0;
+			double zDistance = entity.locZ - bodyBoundingBoxValue1;
+			double distanceSquared = xDistance * xDistance + zDistance * zDistance;
+
+			entity.g(
+				xDistance / distanceSquared * 4.0D,
+				0.20000000298023224D,
+				zDistance / distanceSquared * 4.0D
+			);
 		}
 	}
 
