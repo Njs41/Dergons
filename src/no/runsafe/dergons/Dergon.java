@@ -33,7 +33,6 @@ import static java.lang.Math.toRadians;
  * public int           bl       c        c         c           Ring buffer index for yaw/Y-position buffer.
  * public float         bu       bD       bE        bD          Previous animation time.
  * public float         bv       bE       bF        bE          Animation time.
- * public int           by       bG       bH        bG          Death Ticks.
  *
  * Entity.class:
  * public boolean       F        C        C         C           Checks if entity is collided with a vertical block.
@@ -70,6 +69,8 @@ public class Dergon extends EntityEnderDragon
 
 	// Forces selection of a new flight target when true.
 	private boolean changeTarget = false;
+
+	private int deathTicks = 0;
 
 	/*
 	 * Dergon bodily appendages.
@@ -598,9 +599,9 @@ public class Dergon extends EntityEnderDragon
 			return;
 
 		// Increment death ticks.
-		by++;
+		deathTicks++;
 		// Make explosion particles when the dergon is almost dead.
-		if (by >= 180 && by <= 200)
+		if (deathTicks >= 180 && deathTicks <= 200)
 		{
 			world.addParticle(
 				EnumParticle.EXPLOSION_HUGE,
@@ -614,7 +615,7 @@ public class Dergon extends EntityEnderDragon
 		}
 
 		//Play dragon death sound as dergon death animation starts.
-		if (by == 1)
+		if (deathTicks == 1)
 			getLocation().playSound(
 				Sound.Creature.EnderDragon.Death, 32.0F, 1.0F
 			);
@@ -624,7 +625,7 @@ public class Dergon extends EntityEnderDragon
 		aI = yaw += 20.0F;
 
 		// When animation is finished, slay the dergon.
-		if(by == 200)
+		if(deathTicks == 200)
 		{
 			if(!world.isClientSide)
 				die();
