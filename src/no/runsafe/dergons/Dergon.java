@@ -16,7 +16,6 @@ import java.util.Random;
 
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
-import static java.lang.Math.pow;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.toDegrees;
@@ -24,12 +23,7 @@ import static java.lang.Math.toRadians;
 
 /*
  * Names of obfuscated variables in various spigot versions:
- *
- * Variables in EntityEnderDragon:
  * Type                 v1_8_R3  v1_9_R2  v1_10_R1  v1_11_R1
- * public float         bu       bD       bE        bD          Previous animation time.
- * public float         bv       bE       bF        bE          Animation time.
- *
  * Entity.class:
  * public boolean       F        C        C         C           Checks if entity is collided with a vertical block.
  *
@@ -158,17 +152,11 @@ public class Dergon extends EntityEnderDragon
 		if (targetEntity != null && dergonLocation != null && random.nextFloat() < 0.2F)
 			((RunsafeFallingBlock) targetWorld.spawnFallingBlock(dergonLocation, Item.Unavailable.Fire)).setDropItem(false);
 
-		bu = bv; // Update previous animation time.
-
 		if (getHealth() <= 0.0F) // Check if the dragon is dead.
 		{
 			randomExplosion(); // If we're dead, play a random explosion effect at a random offset to it's corpse.
 			return;
 		}
-
-		float f = 0.2F / ((float) sqrt(motX * motX + motZ * motZ) * 10.0F + 1.0F);
-		f *= pow(2.0D, motY);
-		bv += f;
 
 		yaw = (float) trimDegrees(yaw);
 
