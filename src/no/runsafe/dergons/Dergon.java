@@ -28,7 +28,6 @@ import static java.lang.Math.toRadians;
  *
  * EntityLiving.Class:
  * protected int        bc       bh       bi        bh          Position rotation increment
- * public float         aI       aN       aO        aN          Might have something to do with the yaw offset?
  * protected float      bb       bg       bh        bg          Random Yaw Velocity
  */
 
@@ -250,7 +249,6 @@ public class Dergon extends EntityEnderDragon
 		motZ *= f8;
 		motY *= 0.9100000262260437D;
 
-		aI = yaw;
 		dergonHead.width = dergonHead.length = 3.0F;
 		dergonTailSection0.width = dergonTailSection0.length = 2.0F;
 		dergonTailSection1.width = dergonTailSection1.length = 2.0F;
@@ -486,7 +484,6 @@ public class Dergon extends EntityEnderDragon
 
 		// Slowly move dergon upwards as it dies.
 		move(0, 0.1, 0);
-		aI = yaw += 20.0F;
 
 		// When animation is finished, slay the dergon.
 		if(deathTicks == 200)
