@@ -513,6 +513,81 @@ public class Dergon extends EntityEnderDragon
 	}
 
 	/**
+	 * Despawns entity if it gets too far away.
+	 * Names of this function in various spigot versions:
+	 * v1_8_R3: D
+	 */
+	@Override
+	protected void D()
+	{
+	}
+
+	/**
+	 * Gets all hitboxes.
+	 * Required by the IComplex interface.
+	 * Names of this function in various spigot versions:
+	 * v1_8_R3: aB
+	 * @return All hitboxes.
+	 */
+	@Override
+	public Entity[] aB()
+	{
+		return this.children;
+	}
+
+	/**
+	 * Gets the current world.
+	 * Required by the IComplex interface.
+	 * Names of this function in various spigot versions:
+	 * v1_8_R3: a
+	 * @return The current world.
+	 */
+	@Override
+	public World a()
+	{
+		return this.world;
+	}
+
+	/**
+	 * Gets the idle sound.
+	 * Names of this function in different spigot versions:
+	 * v1_8_R3: z
+	 * v1_9_R2/v1_10_R1: G, returns SoundEffect
+	 * @return Idle sound.
+	 */
+	@Override
+	protected String z()
+	{
+		return "mob.enderdragon.growl";
+	}
+
+	/**
+	 * Get the hurt sound.
+	 * Names of this function in various spigot versions:
+	 * v1_8_R3: bo
+	 * v1_9_R2: bS, returns SoundEffect
+	 * v1_10_R1: bV, returns SoundEffect
+	 * @return string "none"
+	 */
+	@Override
+	protected String bo()
+	{
+		return "mob.enderdragon.hit";
+	}
+
+	/**
+	 * Volume to play dragon hurt and idle sounds at.
+	 * Names of this function in various spigot versions:
+	 * v1_8_R3: bB
+	 * @return Volume.
+	 */
+	@Override
+	protected float bB()
+	{
+		return 5.0F;
+	}
+
+	/**
 	 * Gets the world the dergon is in.
 	 * @return World the dergon is in.
 	 */
