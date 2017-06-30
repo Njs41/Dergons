@@ -576,7 +576,10 @@ public class Dergon extends EntityInsentient implements IComplex, IMonster
 	@Override
 	protected String z()
 	{
-		return "mob.enderdragon.growl";
+		targetWorld.getLocation(locX, locY, locZ).playSound(
+			Sound.Creature.EnderDragon.Growl, 5, 1
+		);
+		return null;
 	}
 
 	/**
@@ -590,19 +593,10 @@ public class Dergon extends EntityInsentient implements IComplex, IMonster
 	@Override
 	protected String bo()
 	{
-		return "mob.enderdragon.hit";
-	}
-
-	/**
-	 * Volume to play dragon hurt and idle sounds at.
-	 * Names of this function in various spigot versions:
-	 * v1_8_R3: bB
-	 * @return Volume.
-	 */
-	@Override
-	protected float bB()
-	{
-		return 5.0F;
+		targetWorld.getLocation(locX, locY, locZ).playSound(
+			Sound.Creature.EnderDragon.Hit, 5, 1
+		);
+		return null;
 	}
 
 	/**
