@@ -19,7 +19,6 @@ import static java.lang.Math.*;
  * Names of obfuscated variables in various spigot versions:
  * Type                 v1_8_R3  v1_9_R2  v1_10_R1 v1_11_R1
  * Entity.class:
- * public boolean       ah       ?        ?        ?           Unknown
  * public boolean       F        C        C        C           Checks if entity is collided with a vertical block.
  *
  * EntityLiving.Class:
@@ -47,7 +46,6 @@ public class Dergon extends EntityInsentient implements IComplex, IMonster
 		this.setSize(16, 8);
 		this.noclip = true;
 		this.fireProof = true;
-		this.ah = true;
 
 		this.handler = handler;
 		this.targetLocation = targetLocation;
